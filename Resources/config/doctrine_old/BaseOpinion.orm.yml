@@ -1,0 +1,28 @@
+Prism\PollBundle\Entity\BaseOpinion:
+  type: mappedSuperclass
+  fields:
+    id:
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+    name:
+      type: string
+      length: 255
+      nullable: false
+    votes:
+      type: integer
+      nullable: true
+    ordering:
+      type: integer
+      nullable: true
+    createdAt:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updatedAt:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
