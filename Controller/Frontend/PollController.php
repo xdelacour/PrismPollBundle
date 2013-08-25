@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Cookie;
+use Prism\PollBundle\Form\VoteType;
 
 class PollController extends Controller
 {
@@ -16,8 +17,8 @@ class PollController extends Controller
     {
         $this->pollEntity = $this->container->getParameter('prism_poll.poll_entity');
         $this->opinionEntity = $this->container->getParameter('prism_poll.opinion_entity');
-        $this->pollEntityRepository = $this->getDoctrine()->getEntityManager()->getRepository($this->pollEntity);
-        $this->opinionEntityRepository = $this->getDoctrine()->getEntityManager()->getRepository($this->opinionEntity);
+        $this->pollEntityRepository = $this->getDoctrine()->getManager()->getRepository($this->pollEntity);
+        $this->opinionEntityRepository = $this->getDoctrine()->getManager()->getRepository($this->opinionEntity);
         $this->voteForm = $this->container->getParameter('prism_poll.vote_form');
     }
 
@@ -67,11 +68,11 @@ class PollController extends Controller
             $opinionsChoices[$opinion->getId()] = $opinion->getName();
         }
 
-        $form = $this->container->get('form.factory')->createNamed(new $this->voteForm, 'poll' . $pollId, null, array('opinionsChoices' => $opinionsChoices));
+        $form = $this->container->get('form.factory')->createNamed('poll' . $pollId, $this->voteForm, null, array('opinionsChoices' => $opinionsChoices));
 
         if ('POST' == $this->getRequest()->getMethod()) {
 
-            $form->bindRequest($this->getRequest());
+            $form->bind($this->getRequest());
 
             if ($form->isValid()) {
 
@@ -79,7 +80,7 @@ class PollController extends Controller
                 $opinion = $this->opinionEntityRepository->find($data['opinions']);
                 $opinion->setVotes($opinion->getVotes() + 1);
 
-                $em = $this->getDoctrine()->getEntityManager();
+                $em = $this->getDoctrine()->getManager();
                 $em->persist($opinion);
                 $em->flush();
 

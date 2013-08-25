@@ -2,48 +2,67 @@
 
 namespace Prism\PollBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Prism\PollBundle\Entity\BasePoll;
+use Prism\PollBundle\Entity\Poll;
+
 /**
  * Prism\PollBundle\Entity\BaseOpinion
+ * @ORM\MappedSuperclass
  */
 abstract class BaseOpinion
 {
     /**
      * @var integer $id
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string $name
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     protected $name;
 
     /**
      * @var integer $votes
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $votes;
 
     /**
      * @var integer $ordering
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $ordering;
 
     /**
      * @var \Datetime $createdAt
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
      * @var \Datetime $updatedAt
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     protected $updatedAt;
 
     /**
      * @var \Prism\PollBundle\Entity\BasePoll
+     * @ORM\ManyToOne(targetEntity="Poll", inversedBy="opinions", cascade={"remove"})
+     * @ORM\JoinColumn(name="pollId", referencedColumnName="id")
      */
     protected $poll;
 
     /**
      * @var float $votesPercentage
+     * @ORM\Column(type="float", nullable=true)
      */
     protected $votesPercentage;
 

@@ -11,7 +11,7 @@
                     <li>
                         <h2>{{ poll }}</h2>
                         <div class="content">
-                            {% render 'PrismPollBundle:Frontend\\Poll:Vote' with { 'pollId': poll.id } %}
+                            {% render url('PrismPollBundle_frontend_poll_vote', { 'pollId': poll.id }) %}
                         </div>
                     </li>
                 {% endfor %}

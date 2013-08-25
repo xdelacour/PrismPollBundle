@@ -22,8 +22,8 @@ class PrismPollExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        //$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        //$loader->load('services.yml');
 
         $container->setParameter('prism_poll.poll_entity', $config['entity']['poll']);
         $container->setParameter('prism_poll.opinion_entity', $config['entity']['opinion']);
@@ -32,11 +32,12 @@ class PrismPollExtension extends Extension
         $container->setParameter('prism_poll.opinion_form', $config['form']['opinion']);
         $container->setParameter('prism_poll.vote_form', $config['form']['vote']);
 
-        $associations = array(
+        /*$associations = array(
             'Prism\PollBundle\Entity\BaseOpinion' => array(
-                'manyToOne' => array(
+                'ManyToOne' => array(
                     'fieldName' => 'poll',
                     'targetEntity' => $config['entity']['poll'],
+                    'inversedBy' => 'opinions',
                     'joinColumns' => array(
                         array(
                             'name' => 'pollId',
@@ -48,7 +49,7 @@ class PrismPollExtension extends Extension
             ),
 
             $config['entity']['poll'] => array( // OneToMany association cannot be set on a mapped superclass
-                'oneToMany' => array(
+                'OneToMany' => array(
                     'fieldName' => 'opinions',
                     'targetEntity' => $config['entity']['opinion'],
                     'mappedBy' => 'poll',
@@ -63,6 +64,6 @@ class PrismPollExtension extends Extension
             )
         );
 
-        $container->setParameter('prism_poll.association_mapping', $associations);
+        $container->setParameter('prism_poll.association_mapping', $associations);*/
     }
 }

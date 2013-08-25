@@ -2,53 +2,73 @@
 
 namespace Prism\PollBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Prism\PollBundle\Entity\BaseOpinion;
+use Prism\PollBundle\Entity\Opinion;
+
 /**
  * Prism\PollBundle\Entity\BasePoll
+ * @ORM\MappedSuperclass
  */
 abstract class BasePoll
 {
     /**
      * @var integer $id
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string $name
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     protected $name;
 
     /**
      * @var string $slug
+     * @Gedmo\Slug(fields={"name"}, separator="-")
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     protected $slug;
 
     /**
      * @var boolean $published
+     * @ORM\Column(type="boolean")
      */
     protected $published;
 
     /**
      * @var boolean $closed
+     * @ORM\Column(type="boolean")
      */
     protected $closed;
 
     /**
      * @var \Datetime $createdAt
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
      * @var \Datetime $updatedAt
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     protected $updatedAt;
 
     /**
      * @var \Prism\PollBundle\Entity\BaseOpinion
+     * @ORM\OneToMany(targetEntity="Opinion", mappedBy="poll", cascade={"persist"})
      */
     protected $opinions;
 
     /**
      * @var integer $totalVotes
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $totalVotes;
 
@@ -201,6 +221,18 @@ abstract class BasePoll
     }
 
     /**
+     * Remove opinions
+     *
+     * @param \Prism\PollBundle\Entity\BaseOpinion $opinions
+     */
+    public function removeOpinion(\Prism\PollBundle\Entity\BaseOpinion $opinions)
+    {
+        if (($key = $this->opinions->indexOf($opinions)) !== false) {
+            $this->opinions->remove($key);
+        }
+    }
+
+    /**
      * Get opinions
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -225,18 +257,6 @@ abstract class BasePoll
     }
 
     /**
-     * @return string
-     */
-    public function __toString()
-    {
-        if ($this->id && $this->name) {
-            return $this->name;
-        }
-
-        return 'New Poll';
-    }
-
-    /**
      * Get the total number of votes
      *
      * @return int
@@ -254,5 +274,18 @@ abstract class BasePoll
         }
 
         return $this->totalVotes;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        if ($this->id && $this->name) {
+            return $this->name;
+        }
+
+        return 'New Poll';
     }
 }

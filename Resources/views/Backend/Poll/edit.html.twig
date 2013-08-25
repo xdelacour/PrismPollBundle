@@ -6,12 +6,12 @@
 
         <a href="{{ path('PrismPollBundle_backend_poll_list') }}" id="back">Back to the list</a>
         <h1>{{ poll }}</h1>
-
-        {% if app.session.getFlash('success') %}
+        
+        {% for flashMessage in app.session.flashbag.get('success') %}
             <div id="success">
-                {{ app.session.getFlash('success') }}
+                {{ flashMessage }}
             </div>
-        {% endif %}
+        {% endfor %}
 
         <form action="{{ path('PrismPollBundle_backend_poll_edit', {'pollId': poll.id }) }}" method="post" novalidate="novalidate" {{ form_enctype(form) }}>
 
@@ -23,7 +23,7 @@
                 <tr>
                     <th>Choices:</th>
                     <td>
-                        <table id="opinions" data-prototype="{% filter escape %}{{ _self.opinionPrototype(form.opinions.get('prototype')) }}{% endfilter %}">
+                        <table id="opinions" data-prototype="{% filter escape %}{{ _self.opinionPrototype(form.opinions.vars.prototype) }}{% endfilter %}">
                             {% for opinion in form.opinions %}
                                 <tr>
                                     {{ _self.opinionPrototype(opinion) }}
